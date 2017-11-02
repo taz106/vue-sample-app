@@ -1,5 +1,5 @@
 <template>
-    <div class="dogsmenu">
+    <div>
         <p> {{title}} </p>
     </div>
 </template>
