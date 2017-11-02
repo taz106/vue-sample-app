@@ -20,7 +20,7 @@ export default {
   data: function () {
     return {
       breeds: [],
-      views: {}
+      views: []
     }
   },
   components: {
@@ -50,8 +50,11 @@ export default {
       )
       .then(
         res => {
-          console.log('log for dogs desc')
-          console.log(res)
+          let key = this.breeds[0]
+          let val = res.data.message 
+          this.views.push({
+            key: val 
+          })
         }
       )
       .catch(
