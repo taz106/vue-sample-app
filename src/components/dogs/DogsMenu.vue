@@ -1,17 +1,22 @@
 <template>
-    <div>
-        <p> {{title}} </p>
-    </div>
+  <span> {{breed}} </span>
 </template>
 
 <script>
 export default {
   name: 'DogsMenu',
-  data () {
-    return {
-      title: 'Dogs Menu'
-    }
+  props: ['breed'],
+  methods: {
+    // onBreedSelect (breed) {
+    //   console.log('breed selected -- ', breed)
+    //   this.$emit('changebreed', breed)
+    // }
   }
 }
 </script>
+
+<style scoped>
+  
+</style>
+
 

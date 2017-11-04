@@ -1,12 +1,8 @@
 import axios from 'axios'
 
-export class HttpService {
-  apiPrefix = 'https://dog.ceo/api/';
-  getBreedNameEndPoint = 'breeds/list/all';
-
-  constructor () {
-    console.log('called')
-  }
+export default {
+  apiPrefix: 'https://dog.ceo/api/',
+  getBreedNameEndPoint: 'breeds/list/all',
 
   getAllBreedName () {
     return new Promise((resolve, reject) => {
@@ -16,9 +12,9 @@ export class HttpService {
         err => reject(err)
       )
     })
-  }
+  },
 
-  getBreedDesc (breed) {
+  getBreedImg (breed) {
     return new Promise((resolve, reject) => {
       axios.get(this.apiPrefix + 'breed/' + breed + '/images/random')
       .then(

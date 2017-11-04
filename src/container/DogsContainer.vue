@@ -2,10 +2,21 @@
     <div class="dogs">
         <p>I am DogsContainer</p>
         <div class="dogs-menu">
-            <dogsmenu />
+          <p class="title"> Dogs Menu </p>
+          <ul>
+            <li v-for="(breed, index) in breeds"
+                :key="index"
+                @click="getBreedDesc(index)">
+                  <dogsmenu :breed="breed" />
+            </li>
+          </ul>
         </div>
         <div class="dogs-viewer">
-            <dogsviewer />
+            <dogsviewer 
+              :dogbreedIndex="breedIndex"
+              :dogbreedName="breedViewName" 
+              :dogbreedImg="breedViewImg"
+              @next-random="nextRandom" />
         </div>
     </div>
 </template>
@@ -13,14 +24,16 @@
 <script>
 import DogsMenu from '@/components/dogs/DogsMenu'
 import DogsViewer from '@/components/dogs/DogsViewer'
-import { HttpService } from '@/service/httpService'
+import DogService from '@/service/dogService'
 
 export default {
   name: 'DogsContainer',
   data: function () {
     return {
       breeds: [],
-      views: []
+      breedIndex: 0,
+      breedViewName: '',
+      breedViewImg: ''
     }
   },
   components: {
@@ -28,14 +41,26 @@ export default {
     dogsviewer: DogsViewer
   },
   created () {
-    this.fetchData(new HttpService())
+    this.getBreedName()
   },
   watch: {
-    '$route': 'fetchData'
+    '$route': 'getBreedName'
   },
   methods: {
-    fetchData (httpService) {
-      httpService.getAllBreedName()
+    getBreedDesc (index) {
+      DogService.getBreedImg(this.breeds[index])
+      .then(
+        res => {
+          this.breedIndex = index
+          this.breedViewName = this.breeds[index]
+          this.breedViewImg = res.data.message
+        }
+      )
+      .catch(err => console.log(err))
+    },
+
+    getBreedName () {
+      DogService.getAllBreedName()
       .then(
         res => {
           if (res.status === 200) {
@@ -44,37 +69,62 @@ export default {
             for (let breedName in breedNames) {
               this.breeds.push(breedName)
             }
-            return httpService.getBreedDesc(this.breeds[0])
+            return this.getBreedDesc(0)
           }
-        }
-      )
-      .then(
-        res => {
-          let key = this.breeds[0]
-          let val = res.data.message 
-          this.views.push({
-            key: val 
-          })
         }
       )
       .catch(
         err => console.log(err)
       )
+    },
+
+    nextRandom (index) {
+      this.getBreedDesc(index)
     }
   }
 }
 </script>
 
 <style scoped>
-    .dogs-menu {
-        width: 25%;
-        float: left;
-    }
+  .dogs-menu {
+    width: 25%;
+    float: left;
+  }
 
-    .dogs-viewer {
-        width: 75%;
-        float: left;
-    }
+  .dogs-viewer {
+    width: 75%;
+    float: left;
+  }
+  .title {
+    margin: 0px;
+    padding: 10px 0px;
+    height: 20px;
+    background-color: #e2e2e2;
+    box-shadow: 0px 0px 1px 1px #adaeb1;
+  }
+  ul {
+    list-style: none;
+    padding-left: 0px;
+    margin-top: 0px;
+    height: 700px;
+    overflow-y: scroll;
+  }
+
+  ul::-webkit-scrollbar {
+    width: 1em;
+  }
+
+  ul::-webkit-scrollbar-thumb{
+    background-color: darkgrey;
+    outline: 1px solid slategrey;
+  }
+
+  li {
+    text-align: center;
+    height: 30px;
+    padding: 10px 5px;
+    border-bottom: 1px solid #e2e2e2;
+  }
 </style>
 
 
